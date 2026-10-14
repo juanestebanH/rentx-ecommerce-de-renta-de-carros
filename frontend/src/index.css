@@ -1,0 +1,222 @@
+@import '@fontsource-variable/plus-jakarta-sans';
+@import 'tw-animate-css';
+@import 'tailwindcss';
+
+/* El tema oscuro se activa con la clase `.dark` en <html> (toggle manual en
+   el header del sitio y en el sidebar del panel admin); no sigue el
+   prefers-color-scheme del SO. El script de index.html la aplica antes del
+   primer render para evitar destellos. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Plus Jakarta Sans como fuente base (reemplaza cualquier referencia a Inter) */
+  --font-sans:
+    'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, 'Segoe UI',
+    Roboto, sans-serif;
+  --font-mono:
+    ui-monospace, 'SF Mono', 'JetBrains Mono', Consolas, 'Liberation Mono',
+    monospace;
+
+  /* ---- Design tokens (oklch, compatibles con componentes shadcn) ----
+     Modo claro por defecto, tintado cálido:
+     fondo crema/hueso #FAF7F2 · texto grafito cálido #2B241E
+     acento teal profesional (verde azulado) #0F766E
+     texto sobre acento: blanco ligeramente teñido #F4FAF9 (5.2:1 → AA)
+     neutros secundarios cálidos (arena, nunca gris frío) */
+  --color-background: oklch(0.9771 0.0074 80.7);
+  --color-foreground: oklch(0.2662 0.0152 62.7);
+  --color-card: oklch(0.989 0.0073 80.7);
+  --color-card-foreground: oklch(0.2662 0.0152 62.7);
+  --color-popover: oklch(0.989 0.0073 80.7);
+  --color-popover-foreground: oklch(0.2662 0.0152 62.7);
+  --color-primary: oklch(0.5109 0.0861 186.4);
+  --color-primary-foreground: oklch(0.9803 0.0065 185.3);
+  --color-secondary: oklch(0.9378 0.0188 75.3);
+  --color-secondary-foreground: oklch(0.3646 0.0301 62.6);
+  --color-muted: oklch(0.9378 0.0188 75.3);
+  --color-muted-foreground: oklch(0.549 0.0247 69.5);
+  --color-accent: oklch(0.9429 0.0212 189.6);
+  --color-accent-foreground: oklch(0.437 0.0705 188.2);
+  /* Banda teal clara para secciones destacadas (distinta del crema base) */
+  --color-accent-band: oklch(0.936 0.029 191.5);
+  --color-destructive: oklch(0.5001 0.1456 31.1);
+  --color-destructive-foreground: oklch(0.9794 0.0093 62.6);
+  --color-border: oklch(0.8997 0.0213 72.1);
+  --color-input: oklch(0.8997 0.0213 72.1);
+  --color-ring: oklch(0.5109 0.0861 186.4);
+
+  /* Hero cinematográfico de Home (diseño "corsa"): fondo oscuro frío y
+     texto marfil. Solo se usan dentro de la hero en ambos temas; el
+     resto de la app reacciona al toggle claro/oscuro. */
+  --color-petroleum: #0b1d28;
+  --color-ivory: #f5f2eb;
+}
+
+@theme inline {
+  /* Radio base 10px; escala derivada estilo shadcn */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 10px;
+
+  /* Alias para el estilo vigente de la app */
+  --sans: var(--font-sans);
+  --heading: var(--font-sans);
+  --text: var(--color-muted-foreground);
+  --text-h: var(--color-foreground);
+  --bg: var(--color-background);
+  --border: var(--color-border);
+  --accent: var(--color-primary);
+  --accent-bg: color-mix(in oklab, var(--color-primary) 12%, transparent);
+  --accent-border: color-mix(in oklab, var(--color-primary) 45%, transparent);
+
+  /* Gráficos del panel admin: colores con >= 3:1 contra --color-card.
+     Validados en ambos temas (card clara y card oscura: 3.1:1 a 5.6:1),
+     así que no requieren variante oscura.
+     La escala teal (1-2) marca los estados de flota operativos; el ámbar
+     (3) rompe la gama a propósito para la flota en mantenimiento, y el
+     azul acero (chart-blue) separa "Rentados" del teal de "Disponibles". */
+  --chart-1: oklch(0.54 0.086 186.4);
+  --chart-2: oklch(0.62 0.075 188.5);
+  --chart-3: oklch(0.66 0.12 58);
+  --chart-blue: oklch(0.58 0.09 238);
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light;
+  color: var(--color-foreground);
+  background: var(--color-background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+/* =====================================================================
+   VARIANTE OSCURA — activa con el toggle (header cliente y sidebar admin)
+   Paleta: neutros grafito frío (negro sutil, sin tinte cálido) + la
+   familia teal de acento del tema claro.
+   La clase `.dark` vive en <html>: la aplica el script anti-FOUC de
+   index.html al cargar y theme.store al alternar (persiste en
+   localStorage `rentx:theme`). Al estar en la raíz, los portales de
+   Radix y Sonner (montados en body) heredan el tema sin extra esfuerzo.
+   `dark:` de Tailwind reacciona a la misma clase (@custom-variant).
+   ===================================================================== */
+:root.dark {
+  color-scheme: dark;
+
+  /* Neutros grafito frío (tinte azul apenas perceptible, nunca café):
+     fondo #0E0F11 · card #16171A · texto #E9EAED · bordes #2A2C31 */
+  --color-background: oklch(0.1682 0.0045 264.4);
+  --color-foreground: oklch(0.9371 0.0042 271.4);
+  --color-card: oklch(0.2048 0.0061 271.1);
+  --color-card-foreground: oklch(0.9371 0.0042 271.4);
+  --color-popover: oklch(0.2048 0.0061 271.1);
+  --color-popover-foreground: oklch(0.9371 0.0042 271.4);
+  --color-primary: oklch(0.7038 0.123 182.5);
+  --color-primary-foreground: oklch(0.2527 0.0377 189.3);
+  --color-secondary: oklch(0.2431 0.0082 264.4);
+  --color-secondary-foreground: oklch(0.889 0.0069 277.2);
+  --color-muted: oklch(0.2431 0.0082 264.4);
+  --color-muted-foreground: oklch(0.7091 0.0121 269.5);
+  --color-accent: oklch(0.3497 0.0509 185.3);
+  --color-accent-foreground: oklch(0.8549 0.1251 181.1);
+  /* Banda teal en oscuro: casi negra con matiz teal; se separa de la card
+     grafito por tono, igual que en claro (la diferencia de luz es baja). */
+  --color-accent-band: oklch(0.2488 0.0231 186.4);
+  --color-destructive: oklch(0.5621 0.1632 32.3);
+  --color-destructive-foreground: oklch(0.9766 0.012 67.7);
+  --color-border: oklch(0.2931 0.0095 268.3);
+  --color-input: oklch(0.2931 0.0095 268.3);
+  --color-ring: oklch(0.7038 0.123 182.5);
+}
+
+/* =====================================================================
+   BARRA DE SCROLL GLOBAL — track transparente + pulgar del tema.
+   Quita la banda de fondo por defecto; deja solo un thumb delgado que
+   hereda el color del borde (claro/oscuro). Se intensifica al hover.
+   ===================================================================== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-muted-foreground);
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--heading);
+    font-weight: 500;
+    color: var(--text-h);
+  }
+  h1 {
+    /* Default editorial: 56px NO va — un h1 sin capa gana a cualquier
+       utility de Tailwind por especificidad de cascade-layers.
+       Este default vive DENTRO de @layer base para que text-4xl/
+       text-lg/text-2xl de cada página puedan sobreescribirlo siempre. */
+    font-size: 32px;
+    letter-spacing: -0.64px;
+    margin: 24px 0;
+    @media (max-width: 1024px) {
+      font-size: 24px;
+      margin: 16px 0;
+    }
+  }
+  h2 {
+    font-size: 24px;
+    line-height: 118%;
+    letter-spacing: -0.24px;
+    margin: 0 0 8px;
+    @media (max-width: 1024px) {
+      font-size: 20px;
+    }
+  }
+  p {
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Sin movimiento reducido no hay video en la hero: queda el póster */
+  .hero-video {
+    display: none;
+  }
+}

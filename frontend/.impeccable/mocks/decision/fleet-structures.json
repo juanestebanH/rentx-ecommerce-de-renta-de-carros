@@ -1,0 +1,69 @@
+{
+  "title": "Elige la estructura de /admin/vehiculos",
+  "question": "Tres estructuras para la misma tarea de triaje. El mundo visual ya está decidido (crema, grafito, teal, Plus Jakarta Sans): esto es composición, no identidad. Re-roll para otra mano.",
+  "options": [
+    {
+      "id": "split-editor",
+      "label": "Split de triaje y editor",
+      "kicker": "THE ROLL",
+      "lineage": "panel de control con inspector",
+      "thesis": "La flota y el registro completo comparten pantalla: elegir un carro no te saca del mapa de la flota.",
+      "palette": ["#FAF7F2", "#2B241E", "#0F766E", "#F4FAF9"],
+      "materials": ["filas densas", "panel de registro fijo", "toggles en línea"],
+      "viewport": "Header y toolbar arriba; lista de flota ocupando ~55% del ancho y panel de registro fijo a la derecha con foto, tarifa, specs y el toggle de estado.",
+      "risk": "En pantallas angostas el panel le roba espacio a la lista y el escaneo de la columna de ocupación se estrecha.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "header + toolbar", "x": 0, "y": 0, "w": 12, "h": 2, "accent": false },
+          { "label": "lista de flota (estado · ocupación · tarifa)", "x": 0, "y": 2, "w": 7, "h": 8, "accent": true },
+          { "label": "registro del carro (foto + campos + acciones)", "x": 7, "y": 2, "w": 5, "h": 8, "accent": false },
+          { "label": "toggle estado / eliminar", "x": 7, "y": 8, "w": 5, "h": 2, "accent": true }
+        ]
+      }
+    },
+    {
+      "id": "table-drawer",
+      "label": "Tabla densa + drawer",
+      "lineage": "espejo de /admin/clientes",
+      "thesis": "La fila es un resumen denso y el drawer es la ficha completa: el admin nunca pierde la lista ni el filtro que tenía puestos.",
+      "palette": ["#FAF7F2", "#2B241E", "#0F766E", "#F4FAF9"],
+      "materials": ["tabla densa", "drawer lateral", "diálogo de confirmación"],
+      "viewport": "Tabla de ancho completo con foto, placa, estado, ocupación real, tarifa y acciones; el drawer entra desde la derecha con la ficha completa y las acciones de estado y borrado.",
+      "risk": "Leer y editar compiten por el mismo ancho: con muchas columnas, el drawer se siente estrecho y se repiten datos.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "header + toolbar + filtro de estado", "x": 0, "y": 0, "w": 12, "h": 2, "accent": false },
+          { "label": "tabla de flota a ancho completo", "x": 0, "y": 2, "w": 12, "h": 8, "accent": true },
+          { "label": "drawer: ficha completa + acciones", "x": 7, "y": 1, "w": 5, "h": 9, "accent": false }
+        ]
+      }
+    },
+    {
+      "id": "inline-rows",
+      "label": "Filas que se abren en línea",
+      "lineage": "tabla expandible",
+      "thesis": "Editar ocurre dentro de la propia fila: la flota sigue siendo un solo objeto continuo y cambiar de carro no cuesta un contexto.",
+      "palette": ["#FAF7F2", "#2B241E", "#0F766E", "#F4FAF9"],
+      "materials": ["fila resumen", "fila editor", "secciones plegables"],
+      "viewport": "Tabla densa; al elegir un carro su fila crece hacia abajo con foto, campos y acciones, y el resto de la flota se desplaza sin salir de la pantalla.",
+      "risk": "Las filas altas rompen el escaneo vertical de la columna de ocupación y la tabla deja de leerse como tabla.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "header + toolbar", "x": 0, "y": 0, "w": 12, "h": 2, "accent": false },
+          { "label": "filas resumen (4 carros)", "x": 0, "y": 2, "w": 12, "h": 4, "accent": true },
+          { "label": "fila abierta: editor del carro", "x": 0, "y": 6, "w": 12, "h": 3, "accent": false },
+          { "label": "resto de filas", "x": 0, "y": 9, "w": 12, "h": 1, "accent": true }
+        ]
+      }
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "steer": true,
+  "buildPath": { "value": "code", "toggle": false }
+}

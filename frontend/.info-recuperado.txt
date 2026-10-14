@@ -1,0 +1,170 @@
+import { useState } from 'react';
+import { CarFront, Check } from 'lucide-react';
+import { Badge } from '@/shared/components/ui/badge';
+import {
+  ESTADO_LABELS,
+  formatTarifa,
+} from '../utils/vehicle.format';
+import type { Vehicle } from '../types/vehicle.types';
+import { SpecsSection } from './SpecsSection';
+
+const FEATURE_LABELS: Record<string, string> = {
+  aire_acondicionado: 'Aire acondicionado',
+  bluetooth: 'Bluetooth',
+  camara_reversa: 'Cámara de reversa',
+  freno_abs: 'Frenos ABS',
+  control_estabilidad: 'Control de estabilidad',
+  puertos_usb: 'Puertos USB',
+  sistema_sonido: 'Sistema de sonido',
+  airbags_frontales: 'Airbags frontales',
+  airbags_laterales: 'Airbags laterales',
+  alarma_antirrobo: 'Alarma antirrobo',
+  luces_led: 'Luces LED',
+};
+
+interface VehicleDetailInfoProps {
+  vehicle: Vehicle;
+}
+
+export function VehicleDetailInfo({ vehicle }: VehicleDetailInfoProps) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const showImage = Boolean(vehicle.foto) && !imgFailed;
+
+  const anio = Number.isFinite(vehicle.ano) ? String(vehicle.ano) : '—';
+
+  const features = [
+    ...new Set<string>(
+      Object.entries(FEATURE_LABELS)
+        .filter(
+          ([key]) => vehicle[key as keyof Vehicle] === true,
+        )
+        .map(([, label]) => label),
+    ),
+  ];
+
+  return (
+    <div className="flex min-w-0 flex-col gap-6">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-card">
+        {showImage ? (
+          <img
+            src={vehicle.foto ?? undefined}
+            alt={vehicle.nombre}
+            loading="eager"
+            onError={() => setImgFailed(true)}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-accent/40 text-accent-foreground">
+            <CarFront className="size-16" aria-hidden="true" />
+          </div>
+        )}
+        {vehicle.estado === 'mantenimiento' && (
+          <Badge variant="secondary" className="absolute right-3 top-3">
+            {ESTADO_LABELS[vehicle.estado]}
+          </Badge>
+        )}
+      </div>
+
+      <SpecsSection vehicle={vehicle} />
+
+      {features.length > 0 && (
+        <section aria-labelledby="equipo-titulo">
+          <h2
+            id="equipo-titulo"
+            className="mb-4! text-lg font-semibold tracking-tight"
+          >
+            Equipamiento
+          </h2>
+          <ul className="flex flex-wrap gap-2">
+            {features.map((feature) => (
+              <li
+                key={feature}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--accent-border)] bg-[var(--accent-bg)] px-3 py-1.5 text-sm font-medium text-accent-foreground"
+              >
+                <Check className="size-3.5 shrink-0" aria-hidden="true" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <p className="text-sm text-muted-foreground">
+        Tarifa base de{' '}
+        <span className="font-semibold text-accent-foreground">
+          {formatTarifa(vehicle.tarifa)}
+        </span>{' '}
+        por día. El total final se calcula según el rango de fechas elegido.{' '}
+        {vehicle.ano > 0 ? `Modelo ${anio}.` : ''}
+      </p>
+    </div>
+  );
+}
+
+function SpecsSection({ vehicle }: { vehicle: Vehicle }) {
+  const capacidad = Number.isFinite(vehicle.capacidad)
+    ? `${vehicle.capacidad} pasajeros`
+    : '—';
+  return (
+    <section aria-labelledby="specs-titulo">
+      <h2
+        id="specs-titulo"
+        className="mb-4! text-lg font-semibold tracking-tight"
+      >
+        Especificaciones
+      </h2>
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3">
+        <SpecItem
+          icon={<Tag className="size-4" aria-hidden="true" />}
+          label="Marca"
+          value={vehicle.id_marca}
+        />
+        <SpecItem
+          icon={<Tag className="size-4" aria-hidden="true" />}
+          label="Categoría"
+          value={categoriaLabel(vehicle.id_categoria)}
+        />
+        <SpecItem
+          icon={<Cog className="size-4" aria-hidden="true" />}
+          label="Transmisión"
+          value={transmisionLabel(vehicle.transmision)}
+        />
+        <SpecItem
+          icon={<Fuel className="size-4" aria-hidden="true" />}
+          label="Combustible"
+          value={vehicle.combustible}
+        />
+        <SpecItem
+          icon={<Users className="size-4" aria-hidden="true" />}
+          label="Capacidad"
+          value={capacidad}
+        />
+        <SpecItem
+          icon={<ShieldCheck className="size-4" aria-hidden="true" />}
+          label="Seguro"
+          value={vehicle.seguro ? 'Incluido' : 'No incluido'}
+        />
+      </dl>
+    </section>
+  );
+}
+
+interface SpecItemProps {
+  icon: ReactNode;
+  label: string;
+  value: string;
+}
+
+function SpecItem({ icon, label, value }: SpecItemProps) {
+  return (
+    <div className="min-w-0">
+      <dt className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        {icon}
+        {label}
+      </dt>
+      <dd className="mt-1 truncate text-sm font-semibold text-foreground">
+        {value}
+      </dd>
+    </div>
+  );
+}

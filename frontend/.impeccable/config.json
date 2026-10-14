@@ -1,0 +1,13 @@
+{
+  "detector": {
+    "ignoreRules": [
+      "cream-palette",
+      "buried-raster",
+      "hero-eyebrow-chip",
+      "low-contrast",
+      "ai-color-palette"
+    ],
+    "ignoreFiles": [],
+    "ignoreValues": []
+  }
+}

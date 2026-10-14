@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="./public/24bd977c-a06d-4b52-a7a7-d34389f0.png"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RentX</title>
+    <meta
+      name="description"
+      content="RentX — Alquiler de carros en Colombia. Explora la flota, compara tarifas y consulta disponibilidad por días."
+    />
+    <script>
+      try {
+        if (window.localStorage.getItem('rentx:theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+export const FIT_SIZE = 6.2;
+export const SPACING = 6.8;
+export const CAM_Y = 0.8;
+export const FOV = 34;
+export const PROGRESS_LAMBDA = 3.4;
+export const DRAG_SPEED = 0.009;
+export const DRAG_LAMBDA = 6;
+export const SWIPE_MODE = true;
+export const GESTURE_LOCK_PX = 10;
+export const HORIZONTAL_RATIO = 1.5;
+export const SWIPE_COMMIT = 0.45;
+export const FLICK_PX_MS = 0.6;
+export const PREVIEW_CLAMP = 1.2;
+export const PREVIEW_BOOST = 1.2;
+export const EXIT_YAW = 0.28;
+export const EXIT_ROLL = 0.08;
+export const EXIT_LIFT = 0.15;
