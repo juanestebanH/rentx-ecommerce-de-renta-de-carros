@@ -2,7 +2,7 @@
 
 Plataforma web de renta de carros: catálogo con disponibilidad por fechas, reserva con pago y un panel de administración para operar el negocio. Proyecto de portafolio full-stack.
 
-**Demo:** [COMPLETAR: enlace al despliegue, o borrar esta línea]
+**Demo:** https://rentx-ecommerce-de-renta-de-carros-1.onrender.com/
 
 ## Funcionalidades
 
